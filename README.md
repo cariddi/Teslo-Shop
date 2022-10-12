@@ -6,8 +6,26 @@
 
 ## Steps to start the server
 
-1. Start the DB
+1. Clone the repo
+
+2. Install dependencies
 
 ```
-docker-compose up -d
+  yarn install
+```
+
+3. Copy `.env.template` file into `.env`
+
+4. Update env variables
+
+5. Start the DB
+
+```
+  docker-compose up -d
+```
+
+6. Start the Server
+
+```
+  yarn start:dev
 ```
