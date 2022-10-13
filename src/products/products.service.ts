@@ -3,9 +3,10 @@ import {
   Injectable,
   InternalServerErrorException,
   Logger,
+  NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { EntityNotFoundError, Repository } from 'typeorm';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { Product } from './entities/product.entity';
@@ -30,26 +31,47 @@ export class ProductsService {
     }
   }
 
+  //TODO: add pagination
   findAll() {
-    return `This action returns all products`;
+    return this.productRepository.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} product`;
+  async findOne(id: string) {
+    // Option 1
+
+    // try {
+    //   const product = await this.productRepository.findOneByOrFail({ id });
+    //   return product;
+    // } catch (error) {
+    //   this.handleDBExceptions(error);
+    // }
+
+    // Option 2
+    const product = await this.productRepository.findOneBy({ id });
+    if (!product)
+      throw new NotFoundException('Product with ID ' + id + 'not found');
+
+    return product;
   }
 
-  update(id: number, updateProductDto: UpdateProductDto) {
+  update(id: string, updateProductDto: UpdateProductDto) {
     return `This action updates a #${id} product`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} product`;
+  async remove(id: string) {
+    const productToDelete = await this.findOne(id);
+    this.productRepository.delete(id); // could also use the 'remove' method
+
+    return productToDelete;
   }
 
   private handleDBExceptions(error: any) {
     if (error.code === '23505') throw new BadRequestException(error.detail);
+    // Added by the 'findOne' method - Option 1
+    if (error instanceof EntityNotFoundError)
+      throw new BadRequestException('Entity not found');
 
     this.logger.error(error);
-    throw new InternalServerErrorException('Error while creating product');
+    throw new InternalServerErrorException('Unexpected Error');
   }
 }
