@@ -48,15 +48,18 @@ export class Product {
   // tags
   // images
 
+  private parseSlug(slug: string) {
+    return slug.toLowerCase().replaceAll(' ', '_').replaceAll("'", '');
+  }
+
   @BeforeInsert()
   checkSlugInsert() {
     if (!this.slug) this.slug = this.title;
-
-    this.slug = this.slug
-      .toLowerCase()
-      .replaceAll(' ', '_')
-      .replaceAll("'", '');
+    this.slug = this.parseSlug(this.slug);
   }
 
-  // @BeforeUpdate()
+  @BeforeUpdate()
+  checkSlugUpdate() {
+    this.slug = this.slug = this.parseSlug(this.slug);
+  }
 }
