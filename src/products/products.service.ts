@@ -11,6 +11,7 @@ import { EntityNotFoundError, Repository } from 'typeorm';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { Product } from './entities/product.entity';
+import { validate as isUUID } from 'uuid';
 
 @Injectable()
 export class ProductsService {
@@ -42,20 +43,24 @@ export class ProductsService {
     });
   }
 
-  async findOne(id: string) {
-    // Option 1
+  async findOne(term: string) {
+    // Adding search by uuid and slug
+    let product: Product;
 
-    // try {
-    //   const product = await this.productRepository.findOneByOrFail({ id });
-    //   return product;
-    // } catch (error) {
-    //   this.handleDBExceptions(error);
-    // }
+    if (isUUID(term)) {
+      product = await this.productRepository.findOneBy({ id: term });
+    } else {
+      const queryBuilder = this.productRepository.createQueryBuilder();
+      product = await queryBuilder
+        .where('title = :title OR slug = :slug', {
+          slug: term,
+          title: term,
+        })
+        .getOne();
+    }
 
-    // Option 2
-    const product = await this.productRepository.findOneBy({ id });
     if (!product)
-      throw new NotFoundException('Product with ID ' + id + 'not found');
+      throw new NotFoundException('Product with ' + term + 'not found');
 
     return product;
   }
