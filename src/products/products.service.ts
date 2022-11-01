@@ -135,7 +135,7 @@ export class ProductsService {
 
   async remove(id: string) {
     const productToDelete = await this.findOne(id);
-    this.productRepository.delete(id); // could also use the 'remove' method
+    await this.productRepository.delete(id); // could also use the 'remove' method
 
     return productToDelete;
   }
@@ -148,5 +148,15 @@ export class ProductsService {
 
     this.logger.error(error);
     throw new InternalServerErrorException('Unexpected Error');
+  }
+
+  async deleteAllProducts() {
+    const query = this.productRepository.createQueryBuilder('product');
+
+    try {
+      return query.delete().where({}).execute();
+    } catch (error) {
+      this.handleDBExceptions(error);
+    }
   }
 }
