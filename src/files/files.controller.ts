@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Controller,
   Post,
   UploadedFile,
@@ -6,14 +7,25 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { FilesService } from './files.service';
+import { fileFilter } from './helpers/fileFilter.helper';
 
 @Controller('files')
 export class FilesController {
   constructor(private readonly filesService: FilesService) {}
 
   @Post('product')
-  @UseInterceptors(FileInterceptor('file')) // this is the name of the KEY sent
+  @UseInterceptors(
+    FileInterceptor('file', {
+      fileFilter: fileFilter,
+    }),
+  ) // this is the name of the KEY sent
   uploadProductImage(@UploadedFile() file: Express.Multer.File) {
-    return file;
+    if (!file) {
+      throw new BadRequestException('File is mandatory');
+    }
+
+    return {
+      fileName: file.originalname,
+    };
   }
 }
