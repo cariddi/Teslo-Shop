@@ -24,14 +24,14 @@
   docker-compose up -d
 ```
 
-6. Excecute SEED
-
-```
-http://localhost:3000/api/seed
-```
-
-7. Start the Server
+6. Start the Server
 
 ```
   yarn start:dev
+```
+
+7. Excecute SEED
+
+```
+http://localhost:3000/api/seed
 ```
