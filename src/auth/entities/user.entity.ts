@@ -8,7 +8,9 @@ export class User {
   @Column('text', { unique: true })
   email: string;
 
-  @Column('text')
+  @Column('text', {
+    select: false, // this indicates wheter the field will be selected when using 'find' methods or query builder selects
+  })
   password: string;
 
   @Column('text')
