@@ -54,22 +54,6 @@ export class AuthService {
     return user;
   }
 
-  // findAll() {
-  //   return `This action returns all auth`;
-  // }
-
-  // findOne(id: number) {
-  //   return `This action returns a #${id} auth`;
-  // }
-
-  // update(id: number, updateAuthDto: UpdateAuthDto) {
-  //   return `This action updates a #${id} auth`;
-  // }
-
-  // remove(id: number) {
-  //   return `This action removes a #${id} auth`;
-  // }
-
   private handleDBExceptions(error: any): never {
     // type never means this function should NEVER (kuak) return a value
     if (error.code === '23505') throw new BadRequestException(error.detail);
