@@ -42,7 +42,7 @@ export class AuthService {
       delete user.password;
       return {
         ...user,
-        token: this.getJwt({ email: user.email }),
+        token: this.getJwt({ id: user.id }),
       };
     } catch (error) {
       this.handleDBExceptions(error);
@@ -55,7 +55,7 @@ export class AuthService {
       where: {
         email,
       },
-      select: { email: true, password: true },
+      select: { email: true, password: true, id: true },
     });
 
     if (!user) throw new UnauthorizedException('Credentials not valid (email)');
@@ -64,8 +64,8 @@ export class AuthService {
       throw new UnauthorizedException('Credentials not valid (password)');
 
     return {
-      ...user,
-      token: this.getJwt({ email: user.email }),
+      email: user.email,
+      token: this.getJwt({ id: user.id }),
     };
   }
 
