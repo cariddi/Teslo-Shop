@@ -7,6 +7,7 @@ import {
   InternalServerErrorException,
 } from '@nestjs/common';
 import { Observable } from 'rxjs';
+import { META_ROLES } from '../decoratos/role-protected.decorator';
 
 @Injectable()
 export class UserRolesGuard implements CanActivate {
@@ -16,7 +17,7 @@ export class UserRolesGuard implements CanActivate {
     context: ExecutionContext,
   ): boolean | Promise<boolean> | Observable<boolean> {
     const validRoles: string[] = this.reflector.get(
-      'roles',
+      META_ROLES,
       context.getHandler(),
     );
 
