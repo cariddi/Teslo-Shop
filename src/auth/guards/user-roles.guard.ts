@@ -7,7 +7,7 @@ import {
   InternalServerErrorException,
 } from '@nestjs/common';
 import { Observable } from 'rxjs';
-import { META_ROLES } from '../decoratos/role-protected.decorator';
+import { META_ROLES } from '../decorators/role-protected.decorator';
 
 @Injectable()
 export class UserRolesGuard implements CanActivate {
@@ -21,6 +21,8 @@ export class UserRolesGuard implements CanActivate {
       context.getHandler(),
     );
 
+    if (!validRoles || validRoles.length === 0) return true;
+
     const req = context.switchToHttp().getRequest();
     const user = req.user;
 
@@ -29,7 +31,10 @@ export class UserRolesGuard implements CanActivate {
 
     const found = validRoles.some((r) => user.roles.indexOf(r) >= 0);
 
-    if (!found) throw new ForbiddenException('Unauthorized user');
+    if (!found)
+      throw new ForbiddenException(
+        'Unauthorized user ' + user.fullName + ', valid roles: ' + validRoles,
+      );
 
     return true;
   }
