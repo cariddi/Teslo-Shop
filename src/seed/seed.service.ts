@@ -19,9 +19,9 @@ export class SeedService {
 
     const insertPromises = [];
 
-    products.forEach((p) => {
-      insertPromises.push(this.productsService.create(p));
-    });
+    // products.forEach((p) => {
+    //   insertPromises.push(this.productsService.create(p));
+    // });
 
     await Promise.all(insertPromises);
 
