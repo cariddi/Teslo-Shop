@@ -1,3 +1,4 @@
+import * as bcrypt from 'bcrypt';
 import { ValidRoles } from '../../auth/interfaces/valid-roles.interface';
 interface SeedProduct {
   description: string;
@@ -32,13 +33,13 @@ export const initialData: SeedData = {
     {
       email: 'test1@gmail.com',
       fullName: 'Test One',
-      password: 'Abc123',
+      password: bcrypt.hashSync('Abc123', 10),
       roles: [ValidRoles.admin],
     },
     {
       email: 'test2@gmail.com',
       fullName: 'Test Two',
-      password: 'Abc123',
+      password: bcrypt.hashSync('Abc123', 10),
       roles: [ValidRoles.user, ValidRoles.superUser],
     },
   ],
