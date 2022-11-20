@@ -1,8 +1,10 @@
+import { User } from 'src/auth/entities/user.entity';
 import {
   BeforeInsert,
   BeforeUpdate,
   Column,
   Entity,
+  ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
@@ -58,6 +60,9 @@ export class Product {
     eager: true, // will retrieve product images when using any find type like method
   })
   images?: ProductImage[];
+
+  @ManyToOne(() => User, (user) => user.products, { eager: true })
+  user: User;
 
   private parseSlug(slug: string) {
     return slug.toLowerCase().replaceAll(' ', '_').replaceAll("'", '');
