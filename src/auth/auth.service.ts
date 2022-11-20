@@ -69,6 +69,13 @@ export class AuthService {
     };
   }
 
+  async checkAuthStatus(user: User) {
+    return {
+      ...user,
+      token: this.getJwt({ id: user.id }),
+    };
+  }
+
   private handleDBExceptions(error: any): never {
     // type never means this function should NEVER (kuak) return a value
     if (error.code === '23505') throw new BadRequestException(error.detail);
