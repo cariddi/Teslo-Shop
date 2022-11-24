@@ -24,6 +24,12 @@ export class MessagesWsGateway
       ServerEvents.ClientsUpdated,
       this.messagesWsService.getConnectedClients(),
     );
+
+    // emit to specific room or namespace
+    // this.wss.to("room or namespace").emit("event", {});
+
+    // join client to specific room or namespace
+    // client.join("room or namespace")
   }
 
   handleDisconnect(client: Socket) {
@@ -39,5 +45,23 @@ export class MessagesWsGateway
   @SubscribeMessage(ClientEvents.ClientMsg)
   handleClientMsg(client: Socket, payload: NewMessageDto) {
     console.log({ id: client.id, payload });
+
+    // emit to specific client
+    // client.emit(ServerEvents.ServerMsg, {
+    //   fullName: 'Server',
+    //   message: payload.message || 'no msg',
+    // });
+
+    // emit to ALL clients but the one who sent the msg
+    // client.broadcast.emit(ServerEvents.ServerMsg, {
+    //   fullName: 'Server',
+    //   message: payload.message || 'no msg',
+    // });
+
+    // emit to ALL clients
+    this.wss.emit(ServerEvents.ServerMsg, {
+      fullName: 'Server',
+      message: payload.message || 'no msg',
+    });
   }
 }
